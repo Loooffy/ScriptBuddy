@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { BrowserRouter } from 'react-router-dom';
 import SrtPlayer from './components/SrtPlayer'
 import './App.css'
 
 function App() {
   return (
-    <div className="app">
-      <header className="app-header">
-        <SrtPlayer />
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="app">
+        <header className="app-header">
+          <SrtPlayer />
+        </header>
+      </div>
+    </BrowserRouter>
   )
 }
 

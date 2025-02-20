@@ -15,6 +15,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { keyframes } from '@mui/system';
 import { ThemeProvider } from '@mui/material/styles';
 import darkTheme from '../theme/darkTheme';
+import { Link } from 'react-router-dom';
 
 const SrtPlayer = () => {
   const [mediaFile, setMediaFile] = useState(null);
@@ -144,19 +145,45 @@ const SrtPlayer = () => {
           alignItems: 'center', 
           mb: 3 
         }}>
-          <img 
-            src="/images/logo.png" 
-            alt="Logo" 
-            style={{ 
-              height: '60px',
-              marginBottom: '8px'
-            }} 
-          />
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 2,
+            marginBottom: '8px'
+          }}>
+            <Link 
+              to="/" 
+              style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                textDecoration: 'none'
+              }}
+            >
+              <img 
+                src="/images/logo.png" 
+                alt="Logo" 
+                style={{ 
+                  height: '60px',
+                }} 
+              />
+              <Typography 
+                variant="h4" 
+                component="h1" 
+                sx={{ 
+                  fontWeight: 700,
+                  color: '#d0cfcd'
+                }}
+              >
+                ScriptBuddy
+              </Typography>
+            </Link>
+          </Box>
           <Typography 
             variant="subtitle2" 
             color="text.secondary"
           >
-          Practice make perfect~
+            Practice make perfect~
           </Typography>
         </Box>
         <Box component="div" sx={{ mb: 2 }}>
@@ -164,7 +191,7 @@ const SrtPlayer = () => {
           <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle1" gutterBottom>
-                Step 1: Upload Audio/Video File
+                Step 1: Upload Audio File
               </Typography>
               <Button
                 component="label"
@@ -227,11 +254,25 @@ const SrtPlayer = () => {
           {srtData.length > 0 && (
             <Paper elevation={3}>
               {srtFileName && (
-                <Box sx={{ p: 1, borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}>
-                  <Typography variant="subtitle1" component="span" sx={{ fontWeight: 'bold' }}>
-                    Subtitle File: 
+                <Box sx={{ 
+                  p: 1.5, 
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 1
+                }}>
+                  <Typography variant="subtitle1" component="span" sx={{ 
+                    fontWeight: 700,
+                    color: '#d0cfcd'
+                  }}>
+                    Subtitle File:
                   </Typography>
-                  <Typography variant="body2" component="span" sx={{ ml: 1 }}>
+                  <Typography variant="body2" component="span" sx={{ 
+                    color: '#d0cfcd',
+                    opacity: 0.8 
+                  }}>
                     {srtFileName}
                   </Typography>
                 </Box>
