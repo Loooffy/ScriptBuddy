@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import './SrtPlayer.css';
 import { 
   Box, 
   Container, 
@@ -9,10 +8,13 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider 
+  Divider,
+  CssBaseline
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { keyframes } from '@mui/system';
+import { ThemeProvider } from '@mui/material/styles';
+import darkTheme from '../theme/darkTheme';
 
 const SrtPlayer = () => {
   const [mediaFile, setMediaFile] = useState(null);
@@ -133,160 +135,184 @@ const SrtPlayer = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 2 }}>
-      <Box component="div" sx={{ mb: 2 }}>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Container maxWidth="lg" sx={{ py: 2 }}>
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          mb: 3 
+        }}>
+          <img 
+            src="/images/logo.png" 
+            alt="Logo" 
+            style={{ 
+              height: '60px',
+              marginBottom: '8px'
+            }} 
+          />
+          <Typography 
+            variant="subtitle2" 
+            color="text.secondary"
+          >
+          Practice make perfect~
+          </Typography>
+        </Box>
+        <Box component="div" sx={{ mb: 2 }}>
 
-        <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1" gutterBottom>
-              Step 1: Upload Audio/Video File
-            </Typography>
-            <Button
-              component="label"
-              variant="contained"
-              startIcon={<CloudUploadIcon />}
-              size="small"
-            >
-              Upload Media
-              <input
-                type="file"
-                onChange={handleMediaUpload}
-                hidden
-              />
-            </Button>
-          </Box>
+          <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                Step 1: Upload Audio/Video File
+              </Typography>
+              <Button
+                component="label"
+                variant="contained"
+                startIcon={<CloudUploadIcon />}
+                size="small"
+              >
+                Upload Media
+                <input
+                  type="file"
+                  onChange={handleMediaUpload}
+                  hidden
+                />
+              </Button>
+            </Box>
 
-          <Box>
-            <Typography variant="subtitle1" gutterBottom>
-              Step 2: Upload Subtitle File
-            </Typography>
-            <Button
-              component="label"
-              variant="contained"
-              startIcon={<CloudUploadIcon />}
-              size="small"
-            >
-              Upload SRT
-              <input
-                type="file"
-                accept=".srt"
-                onChange={handleSRTUpload}
-                hidden
-              />
-            </Button>
-          </Box>
-        </Paper>
-
-        {mediaFile && (
-          <Paper elevation={3} sx={{ p: 1, mb: 2 }}>
-            {mediaFileName && (
-              <Box sx={{ px: 1, mb: 1 }}>
-                <Typography variant="body2" component="span" sx={{ fontWeight: 'bold' }}>
-                  Media File: 
-                </Typography>
-                <Typography variant="body2" component="span" sx={{ ml: 1 }}>
-                  {mediaFileName}
-                </Typography>
-              </Box>
-            )}
-            <video
-              ref={mediaRef}
-              controls
-              onTimeUpdate={handleTimeUpdate}
-              src={mediaFile}
-              style={{ width: '100%', maxHeight: '40px' }}
-            />
-          </Paper>
-        )}
-
-        {srtData.length > 0 && (
-          <Paper elevation={3}>
-            {srtFileName && (
-              <Box sx={{ p: 1, borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}>
-                <Typography variant="subtitle1" component="span" sx={{ fontWeight: 'bold' }}>
-                  Subtitle File: 
-                </Typography>
-                <Typography variant="body2" component="span" sx={{ ml: 1 }}>
-                  {srtFileName}
-                </Typography>
-              </Box>
-            )}
-            <Box sx={{ maxHeight: '60vh', overflow: 'auto' }}>
-              <List dense>
-                {srtData.map((item, index) => (
-                  <React.Fragment key={item.index}>
-                    <ListItem
-                      id={`srt-${item.index}`}
-                      button
-                      onClick={() => handleTextClick(item.start)}
-                      sx={{
-                        cursor: 'pointer',
-                        py: 0.5,
-                        backgroundColor: activeIndex === index ? 'rgba(25, 118, 210, 0.08)' : 'transparent',
-                        animation: activeIndex === index ? `${fadeIn} 0.3s ease-out` : 'none',
-                        '&:hover': {
-                          backgroundColor: activeIndex === index 
-                            ? 'rgba(25, 118, 210, 0.12)' 
-                            : 'rgba(0, 0, 0, 0.04)',
-                          transform: 'translateY(-1px)',
-                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                        },
-                        '&:active': {
-                          backgroundColor: 'rgba(0, 0, 0, 0.08)',
-                          transform: 'translateY(0)',
-                        },
-                        transition: 'all 0.2s ease',
-                        borderLeft: activeIndex === index ? '4px solid #1976d2' : '4px solid transparent',
-                      }}
-                    >
-                      <ListItemText
-                        primary={
-                          <Box 
-                            sx={{ 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              gap: 1,
-                              opacity: activeIndex === index ? 1 : 0.7,
-                              transition: 'opacity 0.3s ease'
-                            }}
-                          >
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{ minWidth: '25px' }}
-                            >
-                              {item.index}
-                            </Typography>
-                            <Box>
-                              <Typography 
-                                variant="caption" 
-                                color="text.secondary"
-                              >
-                                {item.rawTime}
-                              </Typography>
-                              <Typography 
-                                variant="body2"
-                                sx={{
-                                  fontWeight: activeIndex === index ? 500 : 400,
-                                }}
-                              >
-                                {item.content}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        }
-                      />
-                    </ListItem>
-                    {index < srtData.length - 1 && <Divider />}
-                  </React.Fragment>
-                ))}
-              </List>
+            <Box>
+              <Typography variant="subtitle1" gutterBottom>
+                Step 2: Upload Subtitle File
+              </Typography>
+              <Button
+                component="label"
+                variant="contained"
+                startIcon={<CloudUploadIcon />}
+                size="small"
+              >
+                Upload SRT
+                <input
+                  type="file"
+                  accept=".srt"
+                  onChange={handleSRTUpload}
+                  hidden
+                />
+              </Button>
             </Box>
           </Paper>
-        )}
-      </Box>
-    </Container>
+
+          {mediaFile && (
+            <Paper elevation={3} sx={{ p: 1, mb: 2 }}>
+              {mediaFileName && (
+                <Box sx={{ px: 1, mb: 1 }}>
+                  <Typography variant="body2" component="span" sx={{ fontWeight: 'bold' }}>
+                    Media File: 
+                  </Typography>
+                  <Typography variant="body2" component="span" sx={{ ml: 1 }}>
+                    {mediaFileName}
+                  </Typography>
+                </Box>
+              )}
+              <video
+                ref={mediaRef}
+                controls
+                onTimeUpdate={handleTimeUpdate}
+                src={mediaFile}
+                style={{ width: '100%', maxHeight: '40px' }}
+              />
+            </Paper>
+          )}
+
+          {srtData.length > 0 && (
+            <Paper elevation={3}>
+              {srtFileName && (
+                <Box sx={{ p: 1, borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}>
+                  <Typography variant="subtitle1" component="span" sx={{ fontWeight: 'bold' }}>
+                    Subtitle File: 
+                  </Typography>
+                  <Typography variant="body2" component="span" sx={{ ml: 1 }}>
+                    {srtFileName}
+                  </Typography>
+                </Box>
+              )}
+              <Box sx={{ maxHeight: '60vh', overflow: 'auto' }}>
+                <List dense>
+                  {srtData.map((item, index) => (
+                    <React.Fragment key={item.index}>
+                      <ListItem
+                        id={`srt-${item.index}`}
+                        button
+                        onClick={() => handleTextClick(item.start)}
+                        sx={{
+                          cursor: 'pointer',
+                          py: 0.5,
+                          backgroundColor: activeIndex === index ? 'rgba(25, 118, 210, 0.08)' : 'transparent',
+                          animation: activeIndex === index ? `${fadeIn} 0.3s ease-out` : 'none',
+                          '&:hover': {
+                            backgroundColor: activeIndex === index 
+                              ? 'rgba(25, 118, 210, 0.12)' 
+                              : 'rgba(0, 0, 0, 0.04)',
+                            transform: 'translateY(-1px)',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                          },
+                          '&:active': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                            transform: 'translateY(0)',
+                          },
+                          transition: 'all 0.2s ease',
+                          borderLeft: activeIndex === index ? '4px solid #1976d2' : '4px solid transparent',
+                        }}
+                      >
+                        <ListItemText
+                          primary={
+                            <Box 
+                              sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: 1,
+                                opacity: activeIndex === index ? 1 : 0.7,
+                                transition: 'opacity 0.3s ease'
+                              }}
+                            >
+                              <Typography
+                                component="span"
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ minWidth: '25px' }}
+                              >
+                                {item.index}
+                              </Typography>
+                              <Box>
+                                <Typography 
+                                  variant="caption" 
+                                  color="text.secondary"
+                                >
+                                  {item.rawTime}
+                                </Typography>
+                                <Typography 
+                                  variant="body2"
+                                  sx={{
+                                    fontWeight: activeIndex === index ? 500 : 400,
+                                  }}
+                                >
+                                  {item.content}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                      {index < srtData.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                </List>
+              </Box>
+            </Paper>
+          )}
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 };
 
