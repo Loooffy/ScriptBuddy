@@ -1,0 +1,132 @@
+.editor-container {
+  padding: 1rem;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.editor-title {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.file-input-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.file-label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.file-label span {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: bold;
+}
+
+.file-input {
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.audio-player {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.srt-container {
+  overflow-y: auto;
+  height: 16rem;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.srt-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+}
+
+/* Add separate styles for clickable items */
+.srt-item.clickable {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.srt-item.clickable:hover {
+  background-color: #e8e8e8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.srt-item.clickable:active {
+  background-color: #e0e0e0;
+  transform: translateY(0);
+}
+
+/* Add style for active block */
+.srt-item.active {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+.srt-index {
+  color: #666;
+  min-width: 30px;
+  font-weight: bold;
+  padding-right: 1rem;
+  border-right: 1px solid #e0e0e0;
+}
+
+.srt-content {
+  flex: 1;
+}
+
+.srt-timestamp {
+  color: #888;
+  font-size: 0.9em;
+  margin-bottom: 0.5rem;
+}
+
+.media-player {
+  width: 100%;
+  max-height: 50px;
+  margin: 1rem 0;
+}
+
+/* Control styling */
+video::-webkit-media-controls-timeline,
+audio::-webkit-media-controls-timeline {
+  width: 400px !important;
+}
+
+video::-webkit-media-controls-panel,
+audio::-webkit-media-controls-panel {
+  display: flex !important;
+  padding: 0 10px;
+}
+
+.media-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.srt-text {
+  line-height: 1.4;
+}
+
+.srt-line {
+  margin: 0.25rem 0;
+} 
