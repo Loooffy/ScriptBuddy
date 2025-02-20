@@ -47,6 +47,9 @@ jobs:
           git fetch origin gh-pages || echo "gh-pages branch not found, will create it"
           git checkout --orphan gh-pages || git checkout gh-pages
 
+          # Pull remote changes (if any) to avoid conflicts
+          git pull origin gh-pages || echo "No remote changes to pull"
+
           # Remove existing files in the branch (clean slate)
           git rm -rf . || echo "No files to remove"
 
