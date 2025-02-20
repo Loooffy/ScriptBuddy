@@ -31,10 +31,8 @@ jobs:
       - name: List Files in dist
         run: ls -la dist
 
-      - name: Manual Copy (Workaround)
-        run: |
-          mkdir -p ./temp-deploy
-          cp -r ./dist/* ./temp-deploy/
+      - name: Check pwd
+        run: pwd
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
