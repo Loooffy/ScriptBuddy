@@ -8,58 +8,27 @@ on:
       - workflow
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - name: Build
+        run: npm install && npm run build
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          node-version: '18'
+          path: ./dist
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build React App
-        run: npm run build
-
-      - name: List Files After Build
-        run: ls -la
-
-      - name: List Files in dist
-        run: ls -la dist
-
-      - name: Check pwd
-        run: pwd
-
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Configure Git user
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
-          # Set up the gh-pages branch
-          git fetch origin gh-pages || echo "gh-pages branch not found, will create it"
-          git checkout --orphan gh-pages || git checkout gh-pages
-
-          # Pull remote changes (if any) to avoid conflicts
-          git pull origin gh-pages || echo "No remote changes to pull"
-
-          # Remove existing files in the branch (clean slate)
-          git rm -rf . || echo "No files to remove"
-
-          # Copy the built assets from temp-deploy
-          cp -r ./dist/* .
-
-          # Add .nojekyll to prevent Jekyll processing
-          touch .nojekyll
-
-          # Add, commit, and push changes
-          git add .
-          git commit -m "Deploy to GitHub Pages - $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git gh-pages
+        id: deployment
+        uses: actions/deploy-pages@v4
