@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - workflow
 
 jobs:
   build-deploy:
@@ -35,7 +36,27 @@ jobs:
         run: pwd
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./temp-deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Configure Git user
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+          # Set up the gh-pages branch
+          git fetch origin gh-pages || echo "gh-pages branch not found, will create it"
+          git checkout --orphan gh-pages || git checkout gh-pages
+
+          # Remove existing files in the branch (clean slate)
+          git rm -rf . || echo "No files to remove"
+
+          # Copy the built assets from temp-deploy
+          cp -r ./dist/* .
+
+          # Add .nojekyll to prevent Jekyll processing
+          touch .nojekyll
+
+          # Add, commit, and push changes
+          git add .
+          git commit -m "Deploy to GitHub Pages - $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git gh-pages
