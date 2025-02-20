@@ -32,9 +32,9 @@ jobs:
         run: ls -la dist
 
       - name: Manual Copy (Workaround)
-      run: |
-        mkdir -p ./temp-deploy
-        cp -r ./dist/* ./temp-deploy/
+        run: |
+          mkdir -p ./temp-deploy
+          cp -r ./dist/* ./temp-deploy/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
