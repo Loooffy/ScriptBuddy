@@ -25,6 +25,9 @@ jobs:
       - name: Build React App
         run: npm run build
 
+      - name: List Files After Build
+        run: ls -la
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
