@@ -6,18 +6,5 @@ ScriptBuddy is a React-based subtitle player that allows users to upload video/a
 
 ## Features
 
-- Upload video/audio files along with SRT subtitle files
+- Upload audio files along with SRT subtitle files
 - Synchronize subtitles with media playback in real-time
-- Support for multiple subtitle formats
-
-## Installation
-
-```bash
-npm install
-```
-
-## Usage
-
-```bash
-npm start
-```
