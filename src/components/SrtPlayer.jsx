@@ -161,7 +161,7 @@ const SrtPlayer = () => {
               }}
             >
               <img 
-                src="/ScriptBuddy/images/logo.png" 
+                src="./images/logo.png" 
                 alt="Logo" 
                 style={{ 
                   height: '60px',
@@ -183,7 +183,7 @@ const SrtPlayer = () => {
             variant="subtitle2" 
             color="text.secondary"
           >
-            Practice make perfect~
+            Practice makes perfect~
           </Typography>
         </Box>
         <Box component="div" sx={{ mb: 2 }}>
