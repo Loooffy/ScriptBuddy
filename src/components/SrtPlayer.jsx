@@ -161,7 +161,7 @@ const SrtPlayer = () => {
               }}
             >
               <img 
-                src="/images/logo.png" 
+                src="/ScriptBuddy/images/logo.png" 
                 alt="Logo" 
                 style={{ 
                   height: '60px',
