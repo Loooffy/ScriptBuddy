@@ -4,7 +4,7 @@ import './App.css'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/ScriptBuddy'>
       <div className="app">
         <header className="app-header">
           <SrtPlayer />
