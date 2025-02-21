@@ -1,12 +1,13 @@
 import { BrowserRouter } from 'react-router-dom';
+import SrtPlayer from './components/SrtPlayer';
 import './App.css'
 
 function App() {
   return (
-    <BrowserRouter basename='./ScriptBuddy'>
+    <BrowserRouter>
       <div className="app">
         <header className="app-header">
-          <ScriptBuddy />
+          <SrtPlayer />
         </header>
       </div>
     </BrowserRouter>
