@@ -17,6 +17,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
+          name: github-pages
           path: ./dist
 
   deploy:
@@ -33,6 +34,6 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: dist
+          artifact_name: github-pages
           artifact_path: ./dist
           github_token: ${{ secrets.GITHUB_TOKEN }}
