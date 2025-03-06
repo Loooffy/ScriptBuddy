@@ -1,5 +1,5 @@
 import { BrowserRouter } from 'react-router-dom';
-import SrtPlayer from './components/SrtPlayer';
+import ScriptPlayer from './components/ScriptPlayer';
 import './App.css'
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <BrowserRouter basename='/ScriptBuddy'>
       <div className="app">
         <header className="app-header">
-          <SrtPlayer />
+          <ScriptPlayer />
         </header>
       </div>
     </BrowserRouter>
