@@ -9,3 +9,4 @@ lib64
 scripts.txt
 voice_settings.json
 pyvenv.cfg
+.vite
