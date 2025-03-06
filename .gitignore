@@ -1,3 +1,11 @@
 node_modules
 media
 dist
+.env
+bin
+include
+lib
+lib64
+scripts.txt
+voice_settings.json
+pyvenv.cfg
