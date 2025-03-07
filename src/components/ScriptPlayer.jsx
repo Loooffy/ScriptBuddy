@@ -55,9 +55,11 @@ const ScriptPlayer = () => {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   
   const mediaRef = useRef(null);
   const listItemRefs = useRef([]);
+  const scriptContentRef = useRef(null);
   
   const handleOpenUploadModal = () => setUploadModalOpen(true);
   const handleCloseUploadModal = () => setUploadModalOpen(false);
@@ -77,7 +79,7 @@ const ScriptPlayer = () => {
     
     const loadDefaultScript = async () => {
       try {
-        const response = await fetch('./scripts/whole_scripts.json');
+        const response = await fetch('/ScriptBuddy/scripts/whole_scripts.json');
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -96,7 +98,7 @@ const ScriptPlayer = () => {
     
     const loadDefaultAudio = () => {
       try {
-        const audioPath = './audio/whole_scripts.mp3';
+        const audioPath = '/ScriptBuddy/audio/whole_scripts.mp3';
         setMediaFile(audioPath);
         setMediaFileName('whole_scripts.mp3');
         return true;
@@ -120,6 +122,22 @@ const ScriptPlayer = () => {
     };
     
     loadFiles();
+  }, []);
+  
+  useEffect(() => {
+    const handleScroll = (e) => {
+      const scrollTop = e.target.scrollTop;
+      // Use requestAnimationFrame for smoother animation
+      requestAnimationFrame(() => {
+        setIsScrolled(scrollTop > 5);
+      });
+    };
+
+    const scriptContent = scriptContentRef.current;
+    if (scriptContent) {
+      scriptContent.addEventListener('scroll', handleScroll, { passive: true });
+      return () => scriptContent.removeEventListener('scroll', handleScroll);
+    }
   }, []);
   
   const handleTimeUpdate = () => {
@@ -420,17 +438,17 @@ const ScriptPlayer = () => {
   return (
     <>
       <GlobalStyle />
-      <AppContainer>
-        <HeaderContainer>
+      <AppContainer $isScrolled={isScrolled}>
+        <HeaderContainer $isScrolled={isScrolled}>
           <ContentContainer>
             <HeaderContent>
-              <LogoContainer>
+              <LogoContainer $isScrolled={isScrolled}>
                 <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-                  <Logo src="./images/logo.png" alt="Script Player Logo" />
-                  <AppTitle>ScriptBuddy</AppTitle>
+                  <Logo src="/ScriptBuddy/images/logo.png" alt="Script Player Logo" $isScrolled={isScrolled} />
+                  <AppTitle $isScrolled={isScrolled}>ScriptBuddy</AppTitle>
                 </Link>
               </LogoContainer>
-              <AppSubtitle>Practice makes perfect~</AppSubtitle>
+              <AppSubtitle $isScrolled={isScrolled}>Practice makes perfect~</AppSubtitle>
             </HeaderContent>
           </ContentContainer>
         </HeaderContainer>
@@ -514,7 +532,7 @@ const ScriptPlayer = () => {
                   </ChangeFilesButton>
                 </ScriptHeader>
                 
-                <ScriptContent>
+                <ScriptContent ref={scriptContentRef}>
                   {processScriptData().map((group, groupIndex) => (
                     <SpeakerGroup key={groupIndex}>
                       <SpeakerInfo>

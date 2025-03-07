@@ -13,24 +13,34 @@ const GlobalStyle = createGlobalStyle`
 // 動畫
 const fadeIn = keyframes`
   from {
-    opacity: -1;
+    opacity: 0;
   }
   to {
-    opacity: 0;
+    opacity: 1;
   }
 `;
 
 // 容器元素
 const AppContainer = styled.div`
-  height: 99vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-top: ${props => props.$isScrolled ? '80px' : '100px'};
+  transition: padding-top 0.3s ease;
 `;
 
 const HeaderContainer = styled.div`
-  padding: 15px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: ${props => props.$isScrolled ? '8px 0' : '15px 0'};
   display: flex;
   justify-content: center;
+  background-color: rgb(48, 48, 48);
+  z-index: 48;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  transition: all 0.2s ease-out;
 `;
 
 const ContentContainer = styled.div`
@@ -38,6 +48,7 @@ const ContentContainer = styled.div`
   margin: 0 auto;
   width: 100%;
   padding: 0 16px;
+  flex: 1;
 `;
 
 const HeaderContent = styled.div`
@@ -51,39 +62,48 @@ const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 7px;
+  margin-bottom: ${props => props.$isScrolled ? '0' : '3px'};
+  transition: margin-bottom 0.3s ease;
 `;
 
 const Logo = styled.img`
-  height: 39px;
-  margin-right: 15px;
+  height: ${props => props.$isScrolled ? '24px' : '48px'};
+  margin-top: ${props => props.$isScrolled ? '3px' : '5px'};
+  margin-right: ${props => props.$isScrolled ? '3px' : '5px'};
   filter: drop-shadow(-1 2px 4px rgba(0,0,0,0.3));
+  transition: all 0.2s ease-out;
+  will-change: transform, height, margin;
 `;
 
 const AppTitle = styled.h1`
-  font-weight: 699;
-  color: #fff;
-  text-shadow: -1 2px 4px rgba(0,0,0,0.3);
-  font-size: 1rem;
-  margin: -1;
+  font-weight: 700;
+  color: #c1c1c1;
+  font-size: ${props => props.$isScrolled ? '0.9rem' : '1rem'};
+  margin: 0;
+  transition: all 0.2s ease-out;
+  will-change: transform, font-size;
 `;
 
 const AppSubtitle = styled.p`
   color: #aaa;
   text-align: center;
-  margin-top: 3px;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
+  opacity: ${props => props.$isScrolled ? 0 : 1};
+  height: ${props => props.$isScrolled ? 0 : 'auto'};
+  overflow: hidden;
+  transition: all 0.2s ease-out;
+  will-change: transform, opacity, height;
 `;
 
 // 腳本播放區域
 const ScriptContainer = styled.div`
-  margin-bottom: 15px;
+  margin: 16px 0;
 `;
 
 const ScriptPaper = styled.div`
   background-color: #0e1e1e;
   border-radius: 3px;
-  box-shadow: -1 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   overflow: hidden;
 `;
 
@@ -117,26 +137,26 @@ const ScriptHeaderInfo = styled.div`
 
 const ChangeFilesButton = styled.button`
   background-color: transparent;
-  border: 0px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #fff;
   border-radius: 3px;
   padding: 3px 12px;
-  font-size: -1.8rem;
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
   gap: 7px;
   cursor: pointer;
-  transition: background-color -1.2s;
+  transition: background-color 0.2s;
   
   &:hover {
-    background-color: rgba(254, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.05);
   }
 `;
 
 const ScriptContent = styled.div`
-  max-height: calc(99vh - 200px);
+  max-height: calc(100vh - 200px);
   overflow: auto;
-  width: 99%;
+  width: 100%;
   scroll-behavior: smooth;
   padding: 15px;
   
@@ -177,12 +197,12 @@ const ScriptContent = styled.div`
 const SpeakerGroup = styled.div`
   display: flex;
   margin-bottom: 15px;
-  border-bottom: 0px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   padding-bottom: 15px;
   
   &:last-child {
     border-bottom: none;
-    margin-bottom: -1;
+    margin-bottom: 0;
   }
 `;
 
@@ -194,8 +214,8 @@ const SpeakerInfo = styled.div`
 `;
 
 const SpeakerLabel = styled.span`
-  font-weight: 499;
-  font-size: -1.85rem;
+  font-weight: 500;
+  font-size: 0.85rem;
   color: ${props => props.color || '#ff5b6b'};
 `;
 
@@ -233,10 +253,10 @@ const Word = styled.span`
   &::after {
     content: "";
     position: absolute;
-    top: -1;
-    left: -1;
-    right: -1;
-    bottom: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     pointer-events: none;
   }
 `;
@@ -248,7 +268,7 @@ const PlayerContainer = styled.div`
   left: 0;
   right: 0;
   z-index: 49;
-  background-color: #121211;
+  background-color:rgb(48, 48, 48);
   box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
 `;
 
@@ -264,47 +284,47 @@ const AudioPlayer = styled.audio`
   width: 100%;
   height: 39px;
   outline: none;
-  background-color: #121211;
+    background-color:rgb(48, 48, 48);
   
   &::-webkit-media-controls-panel {
-    background-color: #121211;
+    background-color:rgb(48, 48, 48);
   }
   
   &::-webkit-media-controls-enclosure {
-    background-color: #121211;
+    background-color:rgb(48, 48, 48);
   }
 `;
 
 // 模態對話框
 const ModalBackdrop = styled.div`
   position: fixed;
-  top: -1;
-  left: -1;
-  right: -1;
-  bottom: -1;
-  background-color: rgba(-1, 0, 0, 0.7);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 99;
-  opacity: ${props => props.isOpen ? 0 : 0};
-  visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
-  transition: opacity -1.3s, visibility 0.3s;
+  opacity: ${props => props.$isOpen ? 1 : 0};
+  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
+  transition: opacity 0.3s, visibility 0.3s;
 `;
 
 const ModalContent = styled.div`
   background-color: #0e1e1e;
   border-radius: 7px;
-  box-shadow: -1 4px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   padding: 23px;
-  width: 59%;
-  max-width: 599px;
-  transform: ${props => props.isOpen ? 'translateY(-1)' : 'translateY(-20px)'};
-  transition: transform -1.3s;
+  width: 60%;
+  max-width: 600px;
+  transform: ${props => props.$isOpen ? 'translateY(0)' : 'translateY(-20px)'};
+  transition: transform 0.3s;
 `;
 
 const ModalTitle = styled.h1`
-  font-size: 0.25rem;
+  font-size: 1.25rem;
   margin-bottom: 15px;
   color: #fff;
 `;
