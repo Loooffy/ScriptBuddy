@@ -159,8 +159,7 @@ const ChangeFilesButton = styled.button`
 `;
 
 const ScriptContent = styled.div`
-  max-height: calc(100vh - 180px);
-  height: calc(100vh - 180px);
+  height: 75vh;
   overflow-y: auto;
   width: 100%;
   scroll-behavior: smooth;
