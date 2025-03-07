@@ -159,8 +159,8 @@ const ChangeFilesButton = styled.button`
 `;
 
 const ScriptContent = styled.div`
-  max-height: 75vh;
-  overflow: auto;
+  height: 75vh;
+  overflow-y: auto;
   width: 100%;
   scroll-behavior: smooth;
   padding: 15px;

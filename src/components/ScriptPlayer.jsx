@@ -127,18 +127,22 @@ const ScriptPlayer = () => {
   useEffect(() => {
     const handleScroll = (e) => {
       const scrollTop = e.target.scrollTop;
-      // Use requestAnimationFrame for smoother animation
-      requestAnimationFrame(() => {
-        setIsScrolled(scrollTop > 5);
-      });
+      setIsScrolled(scrollTop > 5);
     };
 
     const scriptContent = scriptContentRef.current;
     if (scriptContent) {
-      scriptContent.addEventListener('scroll', handleScroll, { passive: true });
-      return () => scriptContent.removeEventListener('scroll', handleScroll);
+      // 初始化時檢查滾動位置
+      handleScroll({ target: scriptContent });
+      
+      // 添加滾動監聽
+      scriptContent.addEventListener('scroll', handleScroll);
+      
+      return () => {
+        scriptContent.removeEventListener('scroll', handleScroll);
+      };
     }
-  }, []);
+  }, [scriptData]); // 當 scriptData 改變時重新設置監聽
   
   const handleTimeUpdate = () => {
     if (mediaRef.current) {
