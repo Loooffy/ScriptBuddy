@@ -6,7 +6,8 @@
   "homepage": "https://Loooffy.github.io/ScriptBuddy",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
