@@ -26,7 +26,7 @@ const AppContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-top: ${props => props.$isScrolled ? '36px' : '100px'};
+  padding-top: ${props => props.$isScrolled ? '48px' : '100px'};
   transition: padding-top 0.3s ease;
   overflow: hidden;
 `;
@@ -36,11 +36,14 @@ const HeaderContainer = styled.div`
   top: 0;
   left: 0;
   right: 0;
-  padding: ${props => props.$isScrolled ? '8px 0' : '15px 0'};
+  height: ${props => props.$isScrolled ? '48px' : '100px'};
+  padding: 0;
   display: flex;
   justify-content: center;
   z-index: 48;
-  transition: padding 0.3s ease;
+  background-color: rgb(18, 18, 18, 0.9);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
 `;
 
 const ContentContainer = styled.div`
@@ -55,6 +58,8 @@ const HeaderContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%;
   animation: ${fadeIn} 0s ease-out;
 `;
 
@@ -63,7 +68,7 @@ const LogoContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: ${props => props.$isScrolled ? '0' : '3px'};
-  transition: margin-bottom 0.3s ease;
+  transition: all 0.3s ease;
 `;
 
 const Logo = styled.img`
@@ -95,7 +100,10 @@ const AppSubtitle = styled.p`
 
 // 腳本播放區域
 const ScriptContainer = styled.div`
-  margin: 16px 0;
+  margin: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ScriptPaper = styled.div`
@@ -151,7 +159,7 @@ const ChangeFilesButton = styled.button`
 `;
 
 const ScriptContent = styled.div`
-  max-height: calc(100vh - 150px);
+  max-height: 75vh;
   overflow: auto;
   width: 100%;
   scroll-behavior: smooth;
