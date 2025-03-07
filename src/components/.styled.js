@@ -7,6 +7,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: #121212;
     color: #fff;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    overflow: hidden;
   }
 `;
 
@@ -25,8 +26,9 @@ const AppContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-top: ${props => props.$isScrolled ? '80px' : '100px'};
+  padding-top: ${props => props.$isScrolled ? '36px' : '100px'};
   transition: padding-top 0.3s ease;
+  overflow: hidden;
 `;
 
 const HeaderContainer = styled.div`
@@ -37,10 +39,8 @@ const HeaderContainer = styled.div`
   padding: ${props => props.$isScrolled ? '8px 0' : '15px 0'};
   display: flex;
   justify-content: center;
-  background-color: rgb(48, 48, 48);
   z-index: 48;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-  transition: all 0.2s ease-out;
+  transition: padding 0.3s ease;
 `;
 
 const ContentContainer = styled.div`
@@ -71,8 +71,8 @@ const Logo = styled.img`
   margin-top: ${props => props.$isScrolled ? '3px' : '5px'};
   margin-right: ${props => props.$isScrolled ? '3px' : '5px'};
   filter: drop-shadow(-1 2px 4px rgba(0,0,0,0.3));
-  transition: all 0.2s ease-out;
-  will-change: transform, height, margin;
+  transition: all 0.3s ease;
+  will-change: height, margin;
 `;
 
 const AppTitle = styled.h1`
@@ -80,8 +80,7 @@ const AppTitle = styled.h1`
   color: #c1c1c1;
   font-size: ${props => props.$isScrolled ? '0.9rem' : '1rem'};
   margin: 0;
-  transition: all 0.2s ease-out;
-  will-change: transform, font-size;
+  transition: font-size 0.3s ease;
 `;
 
 const AppSubtitle = styled.p`
@@ -91,8 +90,7 @@ const AppSubtitle = styled.p`
   opacity: ${props => props.$isScrolled ? 0 : 1};
   height: ${props => props.$isScrolled ? 0 : 'auto'};
   overflow: hidden;
-  transition: all 0.2s ease-out;
-  will-change: transform, opacity, height;
+  transition: all 0.3s ease;
 `;
 
 // 腳本播放區域
@@ -114,7 +112,6 @@ const ScriptHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 7px;
 `;
 
 const ScriptHeaderTitle = styled.span`
@@ -136,9 +133,9 @@ const ScriptHeaderInfo = styled.div`
 `;
 
 const ChangeFilesButton = styled.button`
-  background-color: transparent;
+  background-color: #323a3a;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
+  color: #c1c1c1;
   border-radius: 3px;
   padding: 3px 12px;
   font-size: 0.8rem;
@@ -149,12 +146,12 @@ const ChangeFilesButton = styled.button`
   transition: background-color 0.2s;
   
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: #3d3d3d;
   }
 `;
 
 const ScriptContent = styled.div`
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 150px);
   overflow: auto;
   width: 100%;
   scroll-behavior: smooth;
@@ -207,16 +204,31 @@ const SpeakerGroup = styled.div`
 `;
 
 const SpeakerInfo = styled.div`
-  width: 119px;
-  padding: 15px;
+  width: 8%;
   display: flex;
   align-items: flex-start;
+  
+  @media (max-width: 768px) {
+    width: 48px;  // Fixed width for small screens
+    min-width: 48px;
+  }
 `;
 
 const SpeakerLabel = styled.span`
   font-weight: 500;
   font-size: 0.85rem;
-  color: ${props => props.color || '#ff5b6b'};
+  color: ${props => props.color || '#ff6b6b'};
+  
+  @media (max-width: 768px) {
+    &::after {
+      content: attr(data-first-char);
+      display: block;
+    }
+    
+    > span {
+      display: none;  // Hide the full text
+    }
+  }
 `;
 
 const SpeakerContent = styled.div`
@@ -264,34 +276,36 @@ const Word = styled.span`
 // 音頻播放器
 const PlayerContainer = styled.div`
   position: fixed;
+  background-color: rgb(88, 88, 88);
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 49;
-  background-color:rgb(48, 48, 48);
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+  height: 40px;
+  display: flex;
+  align-items: center;
 `;
 
 const PlayerContent = styled.div`
   display: flex;
   align-items: center;
-  padding: 11px 16px;
   max-width: 1199px;
   margin: 0 auto;
+  width: 100%;
+  padding: 0 16px;
 `;
 
 const AudioPlayer = styled.audio`
   width: 100%;
   height: 39px;
   outline: none;
-    background-color:rgb(48, 48, 48);
   
   &::-webkit-media-controls-panel {
-    background-color:rgb(48, 48, 48);
+    background-color:rgb(88, 88, 88);
   }
   
   &::-webkit-media-controls-enclosure {
-    background-color:rgb(48, 48, 48);
+    background-color:rgb(88, 88, 88);
   }
 `;
 

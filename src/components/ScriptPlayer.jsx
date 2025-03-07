@@ -386,12 +386,6 @@ const ScriptPlayer = () => {
   const getSpeakerColor = (speakerId) => {
     const colors = {
       'Narrator': '#ff6b6b',
-      '0': '#ff6b6b',
-      '1': '#4ecdc4',
-      '2': '#ffbe76',
-      '3': '#a29bfe',
-      '4': '#55efc4',
-      '5': '#ff7675',
       'Anger': '#e74c3c',
       'Sadness': '#3498db',
       'Joy': '#f1c40f',
@@ -536,8 +530,11 @@ const ScriptPlayer = () => {
                   {processScriptData().map((group, groupIndex) => (
                     <SpeakerGroup key={groupIndex}>
                       <SpeakerInfo>
-                        <SpeakerLabel color={getSpeakerColor(group.speaker || groupIndex)}>
-                          {group.speaker || group.speaker === 0 ? group.speaker : groupIndex}
+                        <SpeakerLabel 
+                          color={getSpeakerColor(group.speaker || groupIndex)}
+                          data-first-char={(group.speaker || groupIndex).toString().charAt(0)}
+                        >
+                          <span>{group.speaker || group.speaker === 0 ? group.speaker : groupIndex}</span>
                         </SpeakerLabel>
                       </SpeakerInfo>
                       
