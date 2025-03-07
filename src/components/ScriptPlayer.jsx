@@ -1,36 +1,49 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Box, 
-  Container, 
-  Typography, 
-  Paper, 
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  CssBaseline,
-  GlobalStyles,
-  Modal,
-  Fade,
-  Backdrop
-} from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { keyframes } from '@mui/system';
-import { ThemeProvider } from '@mui/material/styles';
-import darkTheme from '../theme/darkTheme';
 import { Link } from 'react-router-dom';
-
-// Define fadeIn animation
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
+import {
+  GlobalStyle,
+  AppContainer,
+  HeaderContainer,
+  ContentContainer,
+  HeaderContent,
+  LogoContainer,
+  Logo,
+  AppTitle,
+  AppSubtitle,
+  ScriptContainer,
+  ScriptPaper,
+  ScriptHeader,
+  ScriptHeaderTitle,
+  ScriptHeaderFilename,
+  ScriptHeaderInfo,
+  ChangeFilesButton,
+  ScriptContent,
+  SpeakerGroup,
+  SpeakerInfo,
+  SpeakerLabel,
+  SpeakerContent,
+  SpeakerText,
+  SentenceContainer,
+  Word,
+  PlayerContainer,
+  PlayerContent,
+  AudioPlayer,
+  ModalBackdrop,
+  ModalContent,
+  ModalTitle,
+  UploadSection,
+  UploadLabel,
+  UploadRow,
+  UploadButton,
+  FileName,
+  ModalActions,
+  Button,
+  CancelButton,
+  SubmitButton,
+  ErrorMessage,
+  ErrorAction,
+  LoadingMessage
+} from './.styled';
 
 const ScriptPlayer = () => {
   const [mediaFile, setMediaFile] = useState(null);
@@ -190,18 +203,19 @@ const ScriptPlayer = () => {
     reader.readAsText(file);
   };
   
+  // 解析 JSON 腳本
   const parseJsonTranscript = (jsonData) => {
-    // Check if we have a direct array of words
+    // 檢查是否有直接的單詞陣列
     if (Array.isArray(jsonData)) {
       const words = jsonData;
       
-      // Group words into sentences
+      // 將單詞分組為句子
       const sentences = [];
       let currentSentence = null;
       let sentenceIndex = 1;
       
       words.forEach((word, index) => {
-        // Skip spacing type entries when determining sentence boundaries
+        // 跳過空格類型的條目
         if (word.type === 'spacing') {
           if (currentSentence) {
             currentSentence.words.push(word);
@@ -210,15 +224,15 @@ const ScriptPlayer = () => {
           return;
         }
         
-        // Check if this is a new speaker or first word
+        // 檢查是否是新的說話者或第一個單詞
         const speakerId = word.speaker_id || null;
         const speakerName = word.speaker_name || null;
         
-        // Start a new sentence if:
-        // 1. We don't have a current sentence yet
-        // 2. The speaker changed
-        // 3. The word ends with sentence-ending punctuation
-        // 4. The previous word ended with sentence-ending punctuation
+        // 在以下情況下開始一個新句子：
+        // 1. 我們還沒有當前句子
+        // 2. 說話者改變了
+        // 3. 單詞以句子結束標點符號結尾
+        // 4. 前一個單詞以句子結束標點符號結尾
         const isPunctuation = word.text && word.text.match(/[.!?]$/);
         const isPreviousPunctuation = index > 0 && 
           words[index-1].text && 
@@ -227,7 +241,7 @@ const ScriptPlayer = () => {
           currentSentence.speaker_id !== speakerId;
         
         if (!currentSentence || isSpeakerChange || isPunctuation || isPreviousPunctuation) {
-          // If we have a current sentence, add it to our sentences array
+          // 如果我們有當前句子，將其添加到句子陣列中
           if (currentSentence && currentSentence.words.length > 0) {
             sentences.push({
               index: sentenceIndex++,
@@ -241,7 +255,7 @@ const ScriptPlayer = () => {
             });
           }
           
-          // Start a new sentence
+          // 開始一個新句子
           currentSentence = {
             words: [word],
             start: word.start,
@@ -250,13 +264,13 @@ const ScriptPlayer = () => {
             speaker_name: speakerName
           };
         } else {
-          // Add to current sentence
+          // 添加到當前句子
           currentSentence.words.push(word);
           currentSentence.end = word.end;
         }
       });
       
-      // Add the final sentence if there is one
+      // 添加最後一個句子（如果有的話）
       if (currentSentence && currentSentence.words.length > 0) {
         sentences.push({
           index: sentenceIndex,
@@ -272,82 +286,23 @@ const ScriptPlayer = () => {
       
       return sentences;
     } 
-    // Check if we have a words array in the JSON object
+    // 檢查 JSON 對象中是否有 words 陣列
     else if (jsonData && jsonData.words && Array.isArray(jsonData.words)) {
-      const sentences = [];
-      let currentSentence = null;
-      let sentenceIndex = 1;
+      // 類似的處理邏輯，但使用 jsonData.words
+      // ... 省略相似的代碼 ...
       
-      jsonData.words.forEach((word, index) => {
-        // Check if this is a new speaker or first word
-        const speakerId = word.speaker_id || null;
-        const speakerName = word.speaker_name || null;
-        
-        // Start a new sentence if:
-        // 1. We don't have a current sentence yet
-        // 2. The speaker changed
-        // 3. The word ends with sentence-ending punctuation
-        // 4. The previous word ended with sentence-ending punctuation
-        const isPunctuation = word.text && word.text.match(/[.!?]$/);
-        const isPreviousPunctuation = index > 0 && 
-          jsonData.words[index-1].text && 
-          jsonData.words[index-1].text.match(/[.!?]$/);
-        const isSpeakerChange = currentSentence && 
-          currentSentence.speaker_id !== speakerId;
-        
-        if (!currentSentence || isSpeakerChange || isPunctuation || isPreviousPunctuation) {
-          // If we have a current sentence, add it to our sentences array
-          if (currentSentence && currentSentence.words.length > 0) {
-            sentences.push({
-              index: sentenceIndex++,
-              start: currentSentence.start,
-              end: currentSentence.end,
-              content: currentSentence.words.map(w => w.text).join(''),
-              speaker: currentSentence.speaker_id,
-              speaker_name: currentSentence.speaker_name,
-              rawTime: `${formatTime(currentSentence.start)} --> ${formatTime(currentSentence.end)}`,
-              words: currentSentence.words
-            });
-          }
-          
-          // Start a new sentence
-          currentSentence = {
-            words: [word],
-            start: word.start,
-            end: word.end,
-            speaker_id: speakerId,
-            speaker_name: speakerName
-          };
-        } else {
-          // Add to current sentence
-          currentSentence.words.push(word);
-          currentSentence.end = word.end;
-        }
-      });
+      // 這裡應該實現與上面相同的邏輯，但使用 jsonData.words
+      // 為了簡潔，我省略了重複的代碼
       
-      // Add the final sentence if there is one
-      if (currentSentence && currentSentence.words.length > 0) {
-        sentences.push({
-          index: sentenceIndex,
-          start: currentSentence.start,
-          end: currentSentence.end,
-          content: currentSentence.words.map(w => w.text).join(''),
-          speaker: currentSentence.speaker_id,
-          speaker_name: currentSentence.speaker_name,
-          rawTime: `${formatTime(currentSentence.start)} --> ${formatTime(currentSentence.end)}`,
-          words: currentSentence.words
-        });
-      }
-      
-      return sentences;
+      return parseJsonTranscript(jsonData.words); // 重用上面的邏輯
     } else {
       throw new Error("Invalid JSON format: missing words array");
     }
   };
   
-  // Parse traditional script format
+  // 解析傳統腳本格式
   const parseScript = (content) => {
-    // Simple parsing logic for demonstration
+    // 簡單的解析邏輯
     const lines = content.split('\n');
     const parsedData = [];
     
@@ -372,14 +327,14 @@ const ScriptPlayer = () => {
             speaker_name: null
           });
         }
-        i++; // Skip the content line
+        i++; // 跳過內容行
       }
     }
     
     return parsedData;
   };
   
-  // Parse time string (e.g., "00:01:23.456") to seconds
+  // 解析時間字符串（例如 "00:01:23.456"）為秒
   const parseTimeString = (timeStr) => {
     const parts = timeStr.split(':');
     if (parts.length === 3) {
@@ -393,14 +348,14 @@ const ScriptPlayer = () => {
     return 0;
   };
   
-  // New function to determine if a word is currently being spoken
+  // 判斷單詞是否正在被朗讀
   const isWordActive = (word, currentTime) => {
     return currentTime >= word.start && currentTime <= word.end;
   };
   
-  // Add a new function to handle word click
+  // 處理單詞點擊
   const handleWordClick = (startTime, event) => {
-    // Prevent the click from bubbling up to the ListItem
+    // 防止點擊事件冒泡到句子
     event.stopPropagation();
     
     if (mediaRef.current) {
@@ -409,9 +364,16 @@ const ScriptPlayer = () => {
     }
   };
   
+  // 獲取說話者顏色
   const getSpeakerColor = (speakerId) => {
     const colors = {
       'Narrator': '#ff6b6b',
+      '0': '#ff6b6b',
+      '1': '#4ecdc4',
+      '2': '#ffbe76',
+      '3': '#a29bfe',
+      '4': '#55efc4',
+      '5': '#ff7675',
       'Anger': '#e74c3c',
       'Sadness': '#3498db',
       'Joy': '#f1c40f',
@@ -420,468 +382,217 @@ const ScriptPlayer = () => {
     return colors[speakerId] || colors[speakerId.toString()] || '#ff6b6b';
   };
   
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
+  // 處理腳本數據，將連續的相同說話者的句子組合在一起
+  const processScriptData = () => {
+    const processedData = [];
+    let currentSpeaker = null;
+    let currentGroup = null;
+    
+    scriptData.forEach((item) => {
+      const speakerId = `${item.speaker || ''}:${item.speaker_name || ''}`;
       
-      <Box sx={{ 
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-      }}>
-        <Box sx={{ 
-          padding: '16px 0',
-          display: 'flex',
-          justifyContent: 'center',
-        }}>
-          <Container maxWidth="lg">
-            <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column',
-              alignItems: 'center',
-              animation: `${fadeIn} 1s ease-out`
-            }}>
-              {/* Logo and title in a row */}
-              <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                justifyContent: 'center',
-                mb: 1
-              }}>
+      if (!currentSpeaker || currentSpeaker !== speakerId) {
+        // 開始一個新組
+        if (currentGroup) {
+          processedData.push(currentGroup);
+        }
+        
+        currentGroup = {
+          speaker: item.speaker,
+          speaker_name: item.speaker_name,
+          sentences: [item]
+        };
+        currentSpeaker = speakerId;
+      } else {
+        // 添加到當前組
+        currentGroup.sentences.push(item);
+      }
+    });
+    
+    // 添加最後一個組（如果有的話）
+    if (currentGroup) {
+      processedData.push(currentGroup);
+    }
+    
+    return processedData;
+  };
+  
+  return (
+    <>
+      <GlobalStyle />
+      <AppContainer>
+        <HeaderContainer>
+          <ContentContainer>
+            <HeaderContent>
+              <LogoContainer>
                 <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-                  <Box 
-                    component="img"
-                    src="./images/logo.png"
-                    alt="Script Player Logo"
-                    sx={{ 
-                      height: '40px',
-                      mr: 2,
-                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
-                    }}
-                  />
-                  <Typography 
-                    variant="h4" 
-                    component="h1" 
-                    sx={{ 
-                      fontWeight: 700,
-                      color: '#fff',
-                      textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                    }}
-                  >
-                    ScriptBuddy
-                  </Typography>
+                  <Logo src="./images/logo.png" alt="Script Player Logo" />
+                  <AppTitle>ScriptBuddy</AppTitle>
                 </Link>
-              </Box>
+              </LogoContainer>
+              <AppSubtitle>Practice makes perfect~</AppSubtitle>
+            </HeaderContent>
+          </ContentContainer>
+        </HeaderContainer>
+        
+        <ContentContainer>
+          {/* 載入狀態 */}
+          {isLoading && (
+            <LoadingMessage>Loading script and audio files...</LoadingMessage>
+          )}
+          
+          {/* 錯誤訊息 */}
+          {error && (
+            <ErrorMessage>
+              {error}
+              <ErrorAction onClick={handleOpenUploadModal}>
+                Upload Files Manually
+              </ErrorAction>
+            </ErrorMessage>
+          )}
+          
+          {/* 上傳模態對話框 */}
+          <ModalBackdrop $isOpen={uploadModalOpen} onClick={handleCloseUploadModal}>
+            <ModalContent $isOpen={uploadModalOpen} onClick={e => e.stopPropagation()}>
+              <ModalTitle>Upload Files</ModalTitle>
               
-              <Typography 
-                variant="subtitle2" 
-                color="text.secondary"
-                sx={{
-                  textAlign: 'center',
-                  mt: 0.5,
-                }}
-              >
-                Practice makes perfect~
-              </Typography>
-            </Box>
-          </Container>
-        </Box>
-        
-          <Container maxWidth="lg" sx={{ mb: 4 }}>
-            {/* Loading state */}
-            {isLoading && (
-              <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography>Loading script and audio files...</Typography>
-              </Box>
-            )}
-            
-            {/* Error message */}
-            {error && (
-              <Paper sx={{ p: 2, mb: 2, bgcolor: 'error.dark' }}>
-                <Typography color="error.contrastText">{error}</Typography>
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  sx={{ mt: 1 }}
-                  onClick={handleOpenUploadModal}
+              <UploadSection>
+                <UploadLabel>Media File (MP3, WAV)</UploadLabel>
+                <UploadRow>
+                  <UploadButton>
+                    Upload Media
+                    <input
+                      type="file"
+                      accept="audio/*"
+                      onChange={handleMediaUpload}
+                    />
+                  </UploadButton>
+                  <FileName>{mediaFileName || "No file selected"}</FileName>
+                </UploadRow>
+              </UploadSection>
+              
+              <UploadSection>
+                <UploadLabel>Script File (JSON)</UploadLabel>
+                <UploadRow>
+                  <UploadButton>
+                    Upload Script
+                    <input
+                      type="file"
+                      accept=".json,.txt,.srt,.vtt"
+                      onChange={handleScriptUpload}
+                    />
+                  </UploadButton>
+                  <FileName>{scriptFileName || "No file selected"}</FileName>
+                </UploadRow>
+              </UploadSection>
+              
+              <ModalActions>
+                <CancelButton onClick={handleCloseUploadModal}>
+                  Cancel
+                </CancelButton>
+                <SubmitButton 
+                  onClick={handleCloseUploadModal}
+                  disabled={!mediaFile || scriptData.length === 0}
                 >
-                  Upload Files Manually
-                </Button>
-              </Paper>
-            )}
-            
-            {/* Upload Modal */}
-            <Modal
-              open={uploadModalOpen}
-              onClose={handleCloseUploadModal}
-              closeAfterTransition
-              slots={{
-                backdrop: Backdrop,
-              }}
-              slotProps={{
-                backdrop: {
-                  timeout: 500,
-                },
-              }}
-            >
-              <Fade in={uploadModalOpen}>
-                <Box sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '60%',
-                  maxWidth: '600px',
-                  bgcolor: 'background.paper',
-                  borderRadius: 2,
-                  boxShadow: 24,
-                  p: 4,
-                }}>
-                  <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-                    Upload Files
-                  </Typography>
-                  
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="subtitle2" gutterBottom>
-                      Media File (MP3, WAV)
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <Button
-                        variant="contained"
-                        component="label"
-                        startIcon={<CloudUploadIcon />}
-                        sx={{ mr: 2 }}
-                      >
-                        Upload Media
-                        <input
-                          type="file"
-                          accept="audio/*"
-                          hidden
-                          onChange={handleMediaUpload}
-                        />
-                      </Button>
-                      <Typography variant="body2">
-                        {mediaFileName || "No file selected"}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="subtitle2" gutterBottom>
-                      Script File (JSON)
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <Button
-                        variant="contained"
-                        component="label"
-                        startIcon={<CloudUploadIcon />}
-                        sx={{ mr: 2 }}
-                      >
-                        Upload Script
-                        <input
-                          type="file"
-                          accept=".json,.txt,.srt,.vtt"
-                          hidden
-                          onChange={handleScriptUpload}
-                        />
-                      </Button>
-                      <Typography variant="body2">
-                        {scriptFileName || "No file selected"}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                    <Button onClick={handleCloseUploadModal} sx={{ mr: 2 }}>
-                      Cancel
-                    </Button>
-                    <Button 
-                      variant="contained" 
-                      onClick={handleCloseUploadModal}
-                      disabled={!mediaFile || scriptData.length === 0}
-                    >
-                      Done
-                    </Button>
-                  </Box>
-                </Box>
-              </Fade>
-            </Modal>
-
-            {/* Script data section */}
-            {scriptData.length > 0 && (
-              <Paper elevation={3} sx={{ mb: 2 }}>
-                {scriptFileName && (
-                  <Box sx={{ 
-                    p: 1.5, 
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 1
-                  }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Typography variant="subtitle1" component="span" sx={{ 
-                        fontWeight: 700,
-                        color: '#d0cfcd'
-                      }}>
-                        Subtitle File:
-                      </Typography>
-                      <Typography variant="body2" component="span" sx={{ 
-                        color: '#d0cfcd',
-                        opacity: 0.8 
-                      }}>
-                        {scriptFileName}
-                      </Typography>
-                    </Box>
-                    
-                    {/* Change Files button */}
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      startIcon={<UploadFileIcon />}
-                      onClick={handleOpenUploadModal}
-                      sx={{
-                        borderRadius: 1.5,
-                        textTransform: 'none',
-                        '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                        },
-                      }}
-                    >
-                      Change Files
-                    </Button>
-                  </Box>
-                )}
-                <Box sx={{ 
-                  maxHeight: 'calc(100vh - 200px)',
-                  overflow: 'auto',
-                  width: '100%',
-                  scrollBehavior: 'smooth',
-                  p: 2,
-                  '&::-webkit-scrollbar': {
-                    width: '6px',
-                    backgroundColor: 'transparent',
-                  },
-                  '&::-webkit-scrollbar-track': {
-                    borderRadius: '10px',
-                    backgroundColor: 'rgba(30, 30, 30, 0.2)',
-                    margin: '4px 0',
-                  },
-                  '&::-webkit-scrollbar-thumb': {
-                    borderRadius: '10px',
-                    backgroundColor: 'rgba(100, 100, 100, 0.4)',
-                    border: '1px solid rgba(100, 100, 100, 0.1)',
-                    transition: 'all 0.2s ease',
-                  },
-                  '&:hover::-webkit-scrollbar-thumb': {
-                    backgroundColor: 'rgba(120, 120, 120, 0.5)',
-                  },
-                  '&::-webkit-scrollbar-thumb:hover': {
-                    backgroundColor: 'rgba(150, 150, 150, 0.6)',
-                  },
-                  '&::-webkit-scrollbar-thumb:active': {
-                    backgroundColor: 'rgba(180, 180, 180, 0.7)',
-                  },
-                  scrollbarWidth: 'thin',
-                  scrollbarColor: 'rgba(100, 100, 100, 0.4) rgba(30, 30, 30, 0.2)',
-                }}>
-                  {(() => {
-                    // Process script data to combine consecutive sentences from the same speaker
-                    const processedData = [];
-                    let currentSpeaker = null;
-                    let currentGroup = null;
-                    
-                    scriptData.forEach((item) => {
-                      const speakerId = `${item.speaker || ''}:${item.speaker_name || ''}`;
-                      
-                      if (!currentSpeaker || currentSpeaker !== speakerId) {
-                        // Start a new group
-                        if (currentGroup) {
-                          processedData.push(currentGroup);
-                        }
-                        
-                        currentGroup = {
-                          speaker: item.speaker,
-                          speaker_name: item.speaker_name,
-                          sentences: [item]
-                        };
-                        currentSpeaker = speakerId;
-                      } else {
-                        // Add to current group
-                        currentGroup.sentences.push(item);
-                      }
-                    });
-                    
-                    // Add the last group
-                    if (currentGroup) {
-                      processedData.push(currentGroup);
-                    }
-                    
-                    return processedData.map((group, groupIndex) => (
-                      <Box 
-                        key={groupIndex} 
-                        sx={{ 
-                          display: 'flex',
-                          borderBottom: groupIndex < processedData.length - 1 ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
-                        }}
-                      >
-                        {/* Speaker information in left column - simplified */}
-                        <Box sx={{ 
-                          width: '120px', 
-                          p: 2,
-                          display: 'flex',
-                          alignItems: 'flex-start',
-                        }}>
-                          <Typography 
-                            variant="subtitle2" 
-                            component="span"
-                            sx={{ 
-                              color: getSpeakerColor(group.speaker || groupIndex),
-                              fontWeight: 500,
-                              fontSize: '0.85rem',
-                            }}
-                          >
-                            {group.speaker || group.speaker === 0 ? group.speaker : groupIndex}
-                          </Typography>
-                        </Box>
-                        
-                        {/* Content in right column */}
-                        <Box sx={{ 
-                          flex: 1, 
-                          p: 2,
-                          borderLeft: '1px solid rgba(255, 255, 255, 0.08)',
-                        }}>
-                          <Typography 
-                            variant="body1" 
-                            component="div"
-                            sx={{ 
-                              color: '#c0c0c0',
-                              lineHeight: 1.2,
-                              textAlign: 'left',
-                              fontSize: '0.9rem',
-                            }}
-                          >
-                            {group.sentences.map((sentence, sentenceIndex) => (
-                              <Box
-                                key={sentenceIndex}
-                                onClick={() => handleTextClick(sentence.start)}
-                                sx={{
-                                  cursor: 'pointer',
-                                  display: 'inline',
-                                }}
-                              >
-                                {sentence.words && Array.isArray(sentence.words) ? (
-                                  sentence.words.map((word, wordIndex) => {
-                                    // Check if this is a spacing type or if the word has a space after it
-                                    const isSpace = word.type === 'spacing';
-                                    const needsSpace = !isSpace && wordIndex < sentence.words.length - 1 && 
-                                                      sentence.words[wordIndex + 1].type !== 'spacing' &&
-                                                      !word.text.match(/[.,!?]$/);
-                                    
-                                    return isSpace ? (
-                                      // For spacing type, just render a space
-                                      <span key={wordIndex}> </span>
-                                    ) : (
-                                      // For regular words
-                                      <React.Fragment key={wordIndex}>
-                                        <Box
-                                          component="span"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleWordClick(word.start, e);
-                                          }}
-                                          sx={{
-                                            cursor: 'pointer',
-                                            backgroundColor: isWordActive(word, currentTime) 
-                                              ? 'rgba(255, 255, 255, 0.2)' 
-                                              : 'transparent',
-                                            borderRadius: '2px',
-                                            transition: 'background-color 0.2s',
-                                            display: 'inline-block',
-                                            position: 'relative',
-                                            '&:hover': {
-                                              backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                                            },
-                                            // Prevent hover effect from affecting adjacent words
-                                            '&::after': {
-                                              content: '""',
-                                              position: 'absolute',
-                                              top: 0,
-                                              left: 0,
-                                              right: 0,
-                                              bottom: 0,
-                                              pointerEvents: 'none',
-                                            }
-                                          }}
-                                        >
-                                          {word.text}
-                                        </Box>
-                                        {/* Add space after word if needed */}
-                                        {needsSpace && ' '}
-                                      </React.Fragment>
-                                    );
-                                  })
-                                ) : (
-                                  sentence.content
-                                )}
-                              </Box>
-                            ))}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    ));
-                  })()}
-                </Box>
-              </Paper>
-            )}
-          </Container>
-        </Box>
-        
-        {/* Media player section - fixed at the bottom */}
-        {mediaFile && (
-          <Box sx={{ 
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: 50,
-            boxShadow: '0 -2px 10px rgba(0,0,0,0.3)',
-          }}>
-            <Container maxWidth="lg">
-              <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                py: 1.5,
-                px: 2,
-              }}>
+                  Done
+                </SubmitButton>
+              </ModalActions>
+            </ModalContent>
+          </ModalBackdrop>
+          
+          {/* 腳本數據部分 */}
+          {scriptData.length > 0 && (
+            <ScriptContainer>
+              <ScriptPaper>
+               <ScriptHeader>
+                  <ScriptHeaderInfo>
+                    <ScriptHeaderTitle>Script</ScriptHeaderTitle>
+                    <ScriptHeaderFilename>{scriptFileName}</ScriptHeaderFilename>
+                  </ScriptHeaderInfo>
+                  <ChangeFilesButton onClick={handleOpenUploadModal}>
+                    Change Files
+                  </ChangeFilesButton>
+                </ScriptHeader>
                 
-                <Box sx={{ 
-                  flexGrow: 1, 
-                  display: 'flex',
-                  alignItems: 'center',
-                }}>
-                  <audio
-                    ref={mediaRef}
-                    controls
-                    onTimeUpdate={handleTimeUpdate}
-                    style={{ 
-                      width: '100%',
-                      height: '40px',
-                      outline: 'none',
-                    }}
-                  >
-                    <source src={mediaFile} type="audio/mpeg" />
-                    Your browser does not support the audio element.
-                  </audio>
-                </Box>
-              </Box>
-            </Container>
-          </Box>
+                <ScriptContent>
+                  {processScriptData().map((group, groupIndex) => (
+                    <SpeakerGroup key={groupIndex}>
+                      <SpeakerInfo>
+                        <SpeakerLabel color={getSpeakerColor(group.speaker || groupIndex)}>
+                          {group.speaker || group.speaker === 0 ? group.speaker : groupIndex}
+                        </SpeakerLabel>
+                      </SpeakerInfo>
+                      
+                      <SpeakerContent>
+                        <SpeakerText>
+                          {group.sentences.map((sentence, sentenceIndex) => (
+                            <SentenceContainer 
+                              key={sentenceIndex}
+                              onClick={() => handleTextClick(sentence.start)}
+                              ref={el => {
+                                if (sentence.index === activeIndex + 1) {
+                                  listItemRefs.current[activeIndex] = el;
+                                }
+                              }}
+                            >
+                              {/* 如果有單詞級別的數據，則顯示單詞 */}
+                              {sentence.words ? (
+                                sentence.words.map((word, wordIndex) => {
+                                  // 檢查是否需要在單詞後添加空格
+                                  const needsSpace = word.type !== 'spacing' && 
+                                    wordIndex < sentence.words.length - 1 && 
+                                    sentence.words[wordIndex + 1].type !== 'spacing';
+                                  
+                                  // 跳過空格類型的單詞
+                                  if (word.type === 'spacing') {
+                                    return null;
+                                  }
+                                  
+                                  return (
+                                    <React.Fragment key={wordIndex}>
+                                      <Word
+                                        $isActive={isWordActive(word, currentTime)}
+                                        onClick={(e) => handleWordClick(word.start, e)}
+                                      >
+                                        {word.text}
+                                      </Word>
+                                      {needsSpace && ' '}
+                                    </React.Fragment>
+                                  );
+                                })
+                              ) : (
+                                // 如果沒有單詞級別的數據，則顯示整個內容
+                                sentence.content
+                              )}
+                            </SentenceContainer>
+                          ))}
+                        </SpeakerText>
+                      </SpeakerContent>
+                    </SpeakerGroup>
+                  ))}
+                </ScriptContent>
+              </ScriptPaper>
+            </ScriptContainer>
+          )}
+        </ContentContainer>
+        {/* 音頻播放器 */}
+        {mediaFile && (
+          <PlayerContainer>
+            <PlayerContent>
+              <AudioPlayer
+                ref={mediaRef}
+                controls
+                onTimeUpdate={handleTimeUpdate}
+              >
+                <source src={mediaFile} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </AudioPlayer>
+            </PlayerContent>
+          </PlayerContainer>
         )}
-    </ThemeProvider>
+      </AppContainer>
+    </>
   );
 };
 
 export default ScriptPlayer;
-               
